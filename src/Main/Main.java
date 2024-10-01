@@ -29,7 +29,7 @@ public class Main {
 
         pedido2.adicionarProduto(bebida2);
         pedido2.adicionarProduto(comida1);
-        pedido2.setStatusPedido("A caminho");
+        pedido2.setStatusPedido(STATUS_PEDIDO.A_Caminho);
 
         pedido1.exibirInformacoes();
 

@@ -3,23 +3,17 @@ package Models;
 import java.util.Objects;
 
 public class Bebida extends Produto {
-    private boolean armazemGelado;
+    private boolean armazemEhGelado;
 
     @Override
     public void exibirInformacoes() {
-        String tipoArmazem;
-        if (armazemGelado) {
-            tipoArmazem = "Gelado";
-        } else {
-            tipoArmazem = "Quente";
-        }
         System.out.printf(
                 """
                 Nome: %s
                 Descrição: %s
                 Preço: R$ %.2f
                 Tipo de armázem: %s
-                """,this.getNome(),this.getDescricao(),this.getPreco(),tipoArmazem);
+                """,this.getNome(),this.getDescricao(),this.getPreco(),armazemEhGelado ? "Gelado" : "Quente");
     }
 
     //Abaixo funções básicas (Construtores-Getters-Setters-Equals-HashCode-toString)
@@ -27,17 +21,17 @@ public class Bebida extends Produto {
     public Bebida() {
     }
 
-    public Bebida(String nome, String descricao, double preco, boolean armazemGelado) {
+    public Bebida(String nome, String descricao, double preco, boolean armazemEhGelado) {
         super(nome, descricao, preco);
-        this.armazemGelado = armazemGelado;
+        this.armazemEhGelado = armazemEhGelado;
     }
 
-    public boolean isArmazemGelado() {
-        return armazemGelado;
+    public boolean isArmazemEhGelado() {
+        return armazemEhGelado;
     }
 
-    public void setArmazemGelado(boolean armazemGelado) {
-        this.armazemGelado = armazemGelado;
+    public void setArmazemEhGelado(boolean armazemEhGelado) {
+        this.armazemEhGelado = armazemEhGelado;
     }
 
     @Override
@@ -46,18 +40,18 @@ public class Bebida extends Produto {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Bebida bebida = (Bebida) o;
-        return isArmazemGelado() == bebida.isArmazemGelado();
+        return isArmazemEhGelado() == bebida.isArmazemEhGelado();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), isArmazemGelado());
+        return Objects.hash(super.hashCode(), isArmazemEhGelado());
     }
 
     @Override
     public String toString() {
         return super.toString() +
-                ", armazemGelado=" + armazemGelado +
+                ", armazemGelado=" + armazemEhGelado +
                 "} ";
     }
 }

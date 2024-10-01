@@ -6,7 +6,7 @@ import java.util.List;
 public class Pedido {
     private int idPedido;
     private List<Produto> produtos = new ArrayList<>();
-    private String statusPedido; //Em preparação / Em entrega / Entregue
+    private STATUS_PEDIDO statusPedido; //Em preparação / Em entrega / Entregue
 
     public void exibirInformacoes() {
         System.out.println("Pedido #" + idPedido + "\nStatus: " + statusPedido + "\nItens:");
@@ -14,7 +14,7 @@ public class Pedido {
             produto.exibirInformacoes();
             System.out.println("========================");
         }
-        System.out.println("Valor final: R$ " + this.valorPedido());
+        System.out.println("Valor final: R$ " + String.format("%.2f", this.valorPedido()));
     }
 
     public double valorPedido() {
@@ -40,23 +40,19 @@ public class Pedido {
 
     public Pedido(int idPedido) {
         this.idPedido = idPedido;
-        statusPedido = "Em preparação";
+        statusPedido = STATUS_PEDIDO.Em_Preparacao;
     }
 
     public int getIdPedido() {
         return idPedido;
     }
 
-    public String getStatusPedido() {
+    public STATUS_PEDIDO getStatusPedido() {
         return statusPedido;
     }
 
-    public void setStatusPedido(String statusPedido) {
-        if ("Em preparacao / A caminho / Entregue".toLowerCase().contains(statusPedido.toLowerCase())) {
-            this.statusPedido = statusPedido;
-            return;
-        }
-        System.out.println("Valor inválido");
+    public void setStatusPedido(STATUS_PEDIDO statusPedido) {
+        this.statusPedido = statusPedido;
     }
 
     @Override

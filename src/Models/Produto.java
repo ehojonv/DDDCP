@@ -2,7 +2,7 @@ package Models;
 
 import java.util.Objects;
 
-public class Produto {
+public abstract class Produto {
     private String nome;
     private String descricao;
     private double preco;
