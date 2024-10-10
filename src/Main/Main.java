@@ -10,6 +10,9 @@ import java.util.Scanner;
 public class Main {
 
     private static final List<Cardapio> cardapios = new ArrayList<>();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static int escolha = -1;
+    private static Cardapio cardapioEscolhido = null;
 
     public static void main(String[] args) {
 
@@ -18,8 +21,7 @@ public class Main {
         var bebida1 = new Bebida("Refrigerante", "Um refri de sua escolha", 8, true);
         var bebida2 = new Bebida("Chá", "Um chá de sua escolha", 5, false);
 
-        var cardapio1 = new Cardapio("Restaurante1");
-
+        var cardapio1 = new Cardapio("Comida boa!");
         adicionarCardapio(cardapio1);
 
         var pedido1 = new Pedido(1);
@@ -53,48 +55,67 @@ public class Main {
 
         //MENU VV
 
-        Scanner scanner = new Scanner(System.in);
-        var escolha = "";
-        Cardapio cardapioEscolhido = null;
-
         while (cardapioEscolhido == null) {
-            cardapios.forEach(cardapio -> System.out.println(cardapio.getNomeRestaurante()));
-            System.out.println("Digite o nome do cardapio ou 0 para sair:");
-            escolha = scanner.nextLine();
+            System.out.println("Restaurantes disponiveis:");
+            cardapios.forEach(c -> System.out.println("#" + cardapios.indexOf(c) + 1 + " - " + c.getNomeRestaurante()));
+            System.out.println("Digite o # do restaurante ou 0 para sair:");
+            escolha = scanner.nextInt();
 
-            if (escolha.equals("0")) {
+            if (escolha == 0) {
                 System.out.println("Saindo...");
                 break;
-            }
-            for (Cardapio cardapio : cardapios) {
-                System.out.println(cardapio.getNomeRestaurante());
-                if (cardapio.getNomeRestaurante().equalsIgnoreCase(escolha)) {
-                    cardapioEscolhido = cardapio;
-                    escolha = "-1";
-                    break;
-                } else {
-                    System.out.println("Nao achou");
-                }
+            } else if (escolha > cardapios.size() || escolha < 0) {
+                System.out.println("Valor inválido");
+            } else {
+                cardapioEscolhido = cardapios.get(escolha - 1);
             }
         }
 
-        var opcao = Integer.parseInt(escolha);
+        var opcao = escolha;
         while (opcao != 0) {
-            System.out.println("""
-                    BEm vindo menu legal
+            System.out.printf("""
+                    Bem vindo ao organizador de cardápio do restaurante %s
                     1. Filtrar item carápio
                     2. Ordenar cardapio
                     0
-                    """);
+                    """, cardapioEscolhido.getNomeRestaurante());
             opcao = scanner.nextInt();
             switch (opcao) {
                 case 1:
                     filtrarItensCardapio(cardapioEscolhido);
                     break;
+                case 2:
+                    ordenarCardapio(cardapioEscolhido);
                 case 0:
                     System.out.println("Saindo...");
                     break;
             }
+        }
+    }
+
+    private static void ordenarCardapio(Cardapio cardapio) {
+
+        var opcao = -1;
+        while (opcao != 0 && opcao != 1 && opcao != 2) {
+            System.out.println("""
+                    Quer ordenar os produtos por que fator?
+                    1. Nome
+                    2. Preço
+                    Digite a opção desejada:
+                    """);
+            opcao = scanner.nextInt();
+        }
+
+        if (opcao == 1) {
+            cardapio.getConteudo().stream()
+                    .sorted(Comparator.comparing(Produto::getNome))
+                    .forEach(System.out::println);
+        }
+
+        if (opcao == 2) {
+            cardapio.getConteudo().stream()
+                    .sorted(Comparator.comparing(Produto::getPreco))
+                    .forEach(System.out::println);
         }
     }
 
@@ -103,7 +124,7 @@ public class Main {
     }
 
     private static void filtrarItensCardapio(Cardapio cardapio) {
-
+        System.out.println(cardapioEscolhido);
 
     }
 }
