@@ -13,6 +13,7 @@ public class PratoPrincipal extends Produto {
                 Descrição: %s
                 Preço: R$ %.2f
                 Tempo de Preparo: %d min
+                ========================
                 """,this.getNome(),this.getDescricao(),this.getPreco(),this.getTempoPreparcaoMinutos());
     }
 

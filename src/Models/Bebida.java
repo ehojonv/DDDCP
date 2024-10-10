@@ -13,6 +13,7 @@ public class Bebida extends Produto {
                 Descrição: %s
                 Preço: R$ %.2f
                 Tipo de armázem: %s
+                ========================
                 """,this.getNome(),this.getDescricao(),this.getPreco(),armazemEhGelado ? "Gelado" : "Quente");
     }
 

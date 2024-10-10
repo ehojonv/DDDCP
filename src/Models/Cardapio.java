@@ -11,10 +11,7 @@ public class Cardapio {
     public void exibirInformacoes() {
         System.out.println("\033[1mCardápio do " + nomeRestaurante);
         System.out.println("\033[0mProdutos:");
-        for (Produto produto : conteudo) {
-            produto.exibirInformacoes();
-            System.out.println("==================");
-        }
+        conteudo.forEach(Produto::exibirInformacoes);
     }
 
     public void adicionarProduto(Produto produto) {

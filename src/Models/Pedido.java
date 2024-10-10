@@ -5,15 +5,12 @@ import java.util.List;
 
 public class Pedido {
     private int idPedido;
-    private List<Produto> produtos = new ArrayList<>();
+    private final List<Produto> produtos = new ArrayList<>();
     private STATUS_PEDIDO statusPedido; //Em preparação / Em entrega / Entregue
 
     public void exibirInformacoes() {
         System.out.println("Pedido #" + idPedido + "\nStatus: " + statusPedido + "\nItens:");
-        for (Produto produto : produtos) {
-            produto.exibirInformacoes();
-            System.out.println("========================");
-        }
+        produtos.forEach(Produto::exibirInformacoes);
         System.out.println("Valor final: R$ " + String.format("%.2f", this.valorPedido()));
     }
 
