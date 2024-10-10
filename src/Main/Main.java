@@ -1,7 +1,6 @@
 package Main;
 
 import Models.*;
-import Services.Menu;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,10 +13,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        var comida1 = new PratoPrincipal("Ovo Frito","Um dos melhores ovos fritos",10,6);
-        var comida2 = new PratoPrincipal("Bifão","Um bife suculento ",35,20);
-        var bebida1 = new Bebida("Refrigerante","Um refri de sua escolha",8,true);
-        var bebida2 = new Bebida("Chá","Um chá de sua escolha",5,false);
+        var comida1 = new PratoPrincipal("Ovo Frito", "Um dos melhores ovos fritos", 10, 6);
+        var comida2 = new PratoPrincipal("Bifão", "Um bife suculento ", 35, 20);
+        var bebida1 = new Bebida("Refrigerante", "Um refri de sua escolha", 8, true);
+        var bebida2 = new Bebida("Chá", "Um chá de sua escolha", 5, false);
 
         var cardapio1 = new Cardapio("Restaurante1");
 
@@ -61,9 +60,9 @@ public class Main {
         while (cardapioEscolhido == null) {
             cardapios.forEach(cardapio -> System.out.println(cardapio.getNomeRestaurante()));
             System.out.println("Digite o nome do cardapio ou 0 para sair:");
-            escolha  = scanner.nextLine();
+            escolha = scanner.nextLine();
 
-            if ( escolha.equals("0")) {
+            if (escolha.equals("0")) {
                 System.out.println("Saindo...");
                 break;
             }
@@ -107,4 +106,4 @@ public class Main {
 
 
     }
-    }
+}
