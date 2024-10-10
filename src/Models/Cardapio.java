@@ -47,6 +47,10 @@ public class Cardapio {
         this.nomeRestaurante = nomeRestaurante;
     }
 
+    public List<Produto> getConteudo() {
+        return conteudo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
