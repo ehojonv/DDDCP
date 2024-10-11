@@ -2,11 +2,13 @@ package Main;
 
 import Models.*;
 
+import java.text.Normalizer;
 import java.util.*;
 
 public class Main {
 
     private static final List<Cardapio> cardapios = new ArrayList<>();
+    private static final List<Pedido> pedidos = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
     private static int escolha = -1;
     private static Cardapio cardapioEscolhido = null;
@@ -20,6 +22,8 @@ public class Main {
 
         var cardapio1 = new Cardapio("Comida boa!");
         adicionarCardapio(cardapio1);
+        var cardapio2 = new Cardapio("Go Vegan");
+        adicionarCardapio(cardapio2);
 
         var pedido1 = new Pedido(1);
         var pedido2 = new Pedido(2);
@@ -28,6 +32,9 @@ public class Main {
         cardapio1.adicionarProduto(comida1);
         cardapio1.adicionarProduto(comida2);
         cardapio1.adicionarProduto(bebida2);
+
+        cardapio2.adicionarProduto(comida1);
+        cardapio2.adicionarProduto(bebida2);
 
         pedido1.adicionarProduto(bebida1);
         pedido1.adicionarProduto(comida2);
@@ -41,8 +48,10 @@ public class Main {
 
         while (cardapioEscolhido == null) {
             try {
-                System.out.println("Restaurantes disponiveis:");
-                cardapios.forEach(c -> System.out.println("#" + cardapios.indexOf(c) + 1 + " - " + c.getNomeRestaurante()));
+                System.out.println("""
+                        
+                        Restaurantes disponiveis:""");
+                cardapios.forEach(c -> System.out.println("#" + (cardapios.indexOf(c) + 1) + " - " + c.getNomeRestaurante()));
                 System.out.println("Digite o # do restaurante ou 0 para sair:");
                 escolha = scanner.nextInt();
             } catch (InputMismatchException e) {
@@ -67,11 +76,12 @@ public class Main {
                 System.out.printf("""
                         
                         Bem vindo ao organizador de cardápio do restaurante %s
-                        1. Filtrar item carápio
-                        2. Ordenar cardapio
+                        1. Filtrar item cardápio
+                        2. Ordenar cardápio
                         0. Sair
                         =====================================================
-                        Digite a opção desejada:""", cardapioEscolhido.getNomeRestaurante());
+                        Digite a opção desejada:
+                        """, cardapioEscolhido.getNomeRestaurante());
                 opcao = scanner.nextInt();
                 switch (opcao) {
                     case 1:
@@ -93,6 +103,7 @@ public class Main {
         }
     }
 
+
     private static void adicionarCardapio(Cardapio cardapio) {
         cardapios.add(cardapio);
     }
@@ -100,22 +111,27 @@ public class Main {
     private static void ordenarCardapio(Cardapio cardapio) {
         var opcao = -1;
         while (opcao != 0 && opcao != 1 & opcao != 2) {
-            System.out.println("""
-                    Quer ordenar os produtos por que fator?
-                    1. Nome
-                    2. Preço
-                    0. Voltar
-                    Digite a opção desejada:""");
-            opcao = scanner.nextInt();
+                System.out.println("""
+                        
+                        Quer ordenar os produtos por qual fator?
+                        1. Nome
+                        2. Preço
+                        0. Voltar
+                        =========================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+
             switch (opcao) {
                 case 0:
                     break;
                 case 1:
+                    System.out.printf("\nCardápio do %s ordenado por nome:\n", cardapio.getNomeRestaurante());
                     cardapio.getConteudo().stream()
                             .sorted(Comparator.comparing(Produto::getNome))
                             .forEach(Produto::exibirInformacoes);
                     break;
                 case 2:
+                    System.out.printf("\nCardápio do %s ordenado por preço:\n", cardapio.getNomeRestaurante());
                     cardapio.getConteudo().stream()
                             .sorted(Comparator.comparing(Produto::getPreco))
                             .forEach(Produto::exibirInformacoes);
@@ -127,6 +143,63 @@ public class Main {
     }
 
     private static void filtrarItensCardapio(Cardapio cardapio) {
-        System.out.println(cardapioEscolhido);
+        var opcao = -1;
+        while (opcao != 0 && opcao != 1 & opcao != 2) {
+                System.out.println("""
+                        
+                        Quer filtrar por qual fator?
+                        1. Nome
+                        2. Preço
+                        3. Tipo
+                        0. Voltar
+                        ===============================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    System.out.println("Digite o termo para filtrar:");
+                    var texto = scanner.nextLine();
+                    cardapio.getConteudo().stream()
+                            .filter(p -> Normalizer.normalize(p.getNome(), Normalizer.Form.NFD)
+                                    .replaceAll("\\p{M}", "")
+                                    .toLowerCase()
+                                    .contains(texto.toLowerCase()))
+                            .forEach(Produto::exibirInformacoes);
+                    break;
+                case 2:
+                    System.out.println("Digite o preço máximo para buscar:");
+                    var precoLimite = scanner.nextDouble();
+                    cardapio.getConteudo().stream()
+                            .filter(p -> p.getPreco() <= precoLimite)
+                            .forEach(Produto::exibirInformacoes);
+                    break;
+                case 3:
+                    while (opcao != 0 && opcao != 1 & opcao != 2) {
+                        System.out.println("""
+                                Deseja filtrar em:
+                                1. Prato Principal
+                                2. Bebida
+                                0. Voltar""");
+                        opcao = scanner.nextInt();
+
+                        if (opcao == 1) {
+                            cardapio.getConteudo().stream()
+                                    .filter(p -> p instanceof PratoPrincipal)
+                                    .forEach(Produto::exibirInformacoes);
+                        } else if (opcao == 2) {
+                            cardapio.getConteudo().stream()
+                                    .filter(p -> p instanceof Bebida)
+                                    .forEach(Produto::exibirInformacoes);
+                        }
+                    }
+                    break;
+                default:
+                    System.out.println("Número inválido");
+            }
+        }
     }
 }
