@@ -1,40 +1,78 @@
 package Main;
 
 import Models.*;
+import Services.Menu;
 
-import java.text.Normalizer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     private static final List<Cardapio> cardapios = new ArrayList<>();
     private static final List<Pedido> pedidos = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
-    private static int escolha = -1;
-    private static Cardapio cardapioEscolhido = null;
+
 
     public static void main(String[] args) {
 
         var comida1 = new PratoPrincipal("Ovo Frito", "Um dos melhores ovos fritos", 10, 6);
-        var comida2 = new PratoPrincipal("Bifão", "Um bife suculento ", 35, 20);
+        var comida2 = new PratoPrincipal("Bifão", "Um bife suculento", 35, 20);
+        var comida3 = new PratoPrincipal("Spaghetti Carbonara", "Massa italiana com molho cremoso e bacon", 40, 25);
+        var comida4 = new PratoPrincipal("Salmão Grelhado", "Salmão grelhado com temperos especiais", 60, 30);
+        var comida5 = new PratoPrincipal("Risoto de Cogumelos", "Risoto cremoso com cogumelos frescos", 45, 20);
+
         var bebida1 = new Bebida("Refrigerante", "Um refri de sua escolha", 8, true);
         var bebida2 = new Bebida("Chá", "Um chá de sua escolha", 5, false);
+        var bebida3 = new Bebida("Suco de Laranja", "Suco natural de laranja", 12, true);
+        var bebida4 = new Bebida("Café Expresso", "Café forte e aromático", 6, false);
+        var bebida5 = new Bebida("Smoothie de Morango", "Smoothie refrescante com morangos frescos", 15, true);
 
-        var cardapio1 = new Cardapio("Comida boa!");
-        adicionarCardapio(cardapio1);
+        var cardapio1 = new Cardapio("Comidonas");
         var cardapio2 = new Cardapio("Go Vegan");
-        adicionarCardapio(cardapio2);
+        var cardapio3 = new Cardapio("Grelhados da Casa");
+        var cardapio4 = new Cardapio("Delícias Italianas");
+        var cardapio5 = new Cardapio("Café e Cia");
 
-        var pedido1 = new Pedido(1);
-        var pedido2 = new Pedido(2);
+        cardapios.add(cardapio1);
+        cardapios.add(cardapio2);
+        cardapios.add(cardapio3);
+        cardapios.add(cardapio4);
+        cardapios.add(cardapio5);
 
         cardapio1.adicionarProduto(bebida1);
         cardapio1.adicionarProduto(comida1);
         cardapio1.adicionarProduto(comida2);
         cardapio1.adicionarProduto(bebida2);
+        cardapio1.adicionarProduto(comida3);
+        cardapio1.adicionarProduto(bebida3);
 
-        cardapio2.adicionarProduto(comida1);
+        cardapio2.adicionarProduto(comida5);
         cardapio2.adicionarProduto(bebida2);
+        cardapio2.adicionarProduto(bebida4);
+        cardapio2.adicionarProduto(bebida5);
+
+        cardapio3.adicionarProduto(comida2);
+        cardapio3.adicionarProduto(comida4);
+        cardapio3.adicionarProduto(bebida1);
+        cardapio3.adicionarProduto(bebida3);
+
+        cardapio4.adicionarProduto(comida3);
+        cardapio4.adicionarProduto(comida5);
+        cardapio4.adicionarProduto(bebida5);
+        cardapio4.adicionarProduto(bebida2);
+
+        cardapio5.adicionarProduto(bebida4);
+        cardapio5.adicionarProduto(bebida2);
+        cardapio5.adicionarProduto(bebida3);
+        cardapio5.adicionarProduto(bebida5);
+
+
+        var pedido1 = new Pedido(1);
+        var pedido2 = new Pedido(2);
+
+        pedidos.add(pedido1);
+        pedidos.add(pedido2);
 
         pedido1.adicionarProduto(bebida1);
         pedido1.adicionarProduto(comida2);
@@ -43,163 +81,8 @@ public class Main {
         pedido2.adicionarProduto(comida1);
         pedido2.setStatusPedido(STATUS_PEDIDO.A_Caminho);
 
+        var menu = new Menu(scanner, cardapios, pedidos);
 
-        //MENU VV
-
-        while (cardapioEscolhido == null) {
-            try {
-                System.out.println("""
-                        
-                        Restaurantes disponiveis:""");
-                cardapios.forEach(c -> System.out.println("#" + (cardapios.indexOf(c) + 1) + " - " + c.getNomeRestaurante()));
-                System.out.println("Digite o # do restaurante ou 0 para sair:");
-                escolha = scanner.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Insira uma valor válido");
-                scanner.nextLine();
-                continue;
-            }
-
-            if (1 <= escolha && escolha <= cardapios.size()) {
-                cardapioEscolhido = cardapios.get(escolha - 1);
-            } else if (escolha == 0) {
-                System.out.println("Saindo...");
-                break;
-            } else {
-                System.out.println("Número inválido");
-            }
-        }
-
-        var opcao = escolha;
-        while (opcao != 0) {
-            try {
-                System.out.printf("""
-                        
-                        Bem vindo ao organizador de cardápio do restaurante %s
-                        1. Filtrar item cardápio
-                        2. Ordenar cardápio
-                        0. Sair
-                        =====================================================
-                        Digite a opção desejada:
-                        """, cardapioEscolhido.getNomeRestaurante());
-                opcao = scanner.nextInt();
-                switch (opcao) {
-                    case 1:
-                        filtrarItensCardapio(cardapioEscolhido);
-                        break;
-                    case 2:
-                        ordenarCardapio(cardapioEscolhido);
-                        break;
-                    case 0:
-                        System.out.println("Saindo...");
-                        break;
-                    default:
-                        System.out.println("Número inválido");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Insira uma valor válido");
-                scanner.nextLine();
-            }
-        }
-    }
-
-
-    private static void adicionarCardapio(Cardapio cardapio) {
-        cardapios.add(cardapio);
-    }
-
-    private static void ordenarCardapio(Cardapio cardapio) {
-        var opcao = -1;
-        while (opcao != 0 && opcao != 1 & opcao != 2) {
-                System.out.println("""
-                        
-                        Quer ordenar os produtos por qual fator?
-                        1. Nome
-                        2. Preço
-                        0. Voltar
-                        =========================================
-                        Digite a opção desejada:""");
-                opcao = scanner.nextInt();
-
-            switch (opcao) {
-                case 0:
-                    break;
-                case 1:
-                    System.out.printf("\nCardápio do %s ordenado por nome:\n", cardapio.getNomeRestaurante());
-                    cardapio.getConteudo().stream()
-                            .sorted(Comparator.comparing(Produto::getNome))
-                            .forEach(Produto::exibirInformacoes);
-                    break;
-                case 2:
-                    System.out.printf("\nCardápio do %s ordenado por preço:\n", cardapio.getNomeRestaurante());
-                    cardapio.getConteudo().stream()
-                            .sorted(Comparator.comparing(Produto::getPreco))
-                            .forEach(Produto::exibirInformacoes);
-                    break;
-                default:
-                    System.out.println("Número inválido");
-            }
-        }
-    }
-
-    private static void filtrarItensCardapio(Cardapio cardapio) {
-        var opcao = -1;
-        while (opcao != 0 && opcao != 1 & opcao != 2) {
-                System.out.println("""
-                        
-                        Quer filtrar por qual fator?
-                        1. Nome
-                        2. Preço
-                        3. Tipo
-                        0. Voltar
-                        ===============================
-                        Digite a opção desejada:""");
-                opcao = scanner.nextInt();
-                scanner.nextLine();
-
-            switch (opcao) {
-                case 0:
-                    break;
-                case 1:
-                    System.out.println("Digite o termo para filtrar:");
-                    var texto = scanner.nextLine();
-                    cardapio.getConteudo().stream()
-                            .filter(p -> Normalizer.normalize(p.getNome(), Normalizer.Form.NFD)
-                                    .replaceAll("\\p{M}", "")
-                                    .toLowerCase()
-                                    .contains(texto.toLowerCase()))
-                            .forEach(Produto::exibirInformacoes);
-                    break;
-                case 2:
-                    System.out.println("Digite o preço máximo para buscar:");
-                    var precoLimite = scanner.nextDouble();
-                    cardapio.getConteudo().stream()
-                            .filter(p -> p.getPreco() <= precoLimite)
-                            .forEach(Produto::exibirInformacoes);
-                    break;
-                case 3:
-                    while (opcao != 0 && opcao != 1 & opcao != 2) {
-                        System.out.println("""
-                                Deseja filtrar em:
-                                1. Prato Principal
-                                2. Bebida
-                                0. Voltar""");
-                        opcao = scanner.nextInt();
-
-                        if (opcao == 1) {
-                            cardapio.getConteudo().stream()
-                                    .filter(p -> p instanceof PratoPrincipal)
-                                    .forEach(Produto::exibirInformacoes);
-                        } else if (opcao == 2) {
-                            cardapio.getConteudo().stream()
-                                    .filter(p -> p instanceof Bebida)
-                                    .forEach(Produto::exibirInformacoes);
-                        }
-                    }
-                    break;
-                default:
-                    System.out.println("Número inválido");
-            }
-        }
+        menu.iniciarMenuCardapios();
     }
 }
