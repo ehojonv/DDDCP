@@ -9,7 +9,9 @@ public class Pedido {
     private STATUS_PEDIDO statusPedido; //Em preparação / Em entrega / Entregue
 
     public void exibirInformacoes() {
-        System.out.println("Pedido #" + idPedido + "\nStatus: " + statusPedido + "\nItens:");
+        System.out.println("Pedido #" + idPedido + "\n" +
+                "Status: " + statusPedido + "\n" +
+                "Itens:");
         produtos.forEach(Produto::exibirInformacoes);
         System.out.println("Valor final: R$ " + String.format("%.2f", this.valorPedido()));
     }

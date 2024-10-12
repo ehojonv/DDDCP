@@ -24,11 +24,125 @@ public class Menu {
         cardapioEscolhido = null;
         selecionarRestaurante();
         if (cardapioEscolhido != null) {
-            exibirOpcoesMenu();
+            exibirOpcoesMenuCardapio();
         }
     }
 
     public void iniciarMenuPedidos() {
+        exibirOpcoesMenuPedidos();
+    }
+
+    private void exibirOpcoesMenuPedidos() {
+        int opcao = -1;
+        while (opcao != 0) {
+            try {
+                System.out.println("""
+                        
+                        Bem vindo ao organizador de pedidos
+                        1. Calcular o total de vendas geral
+                        2. 
+                        3. Listar pedidos por status
+                        0. Sair
+                        """);
+                opcao = scanner.nextInt();
+
+                switch (opcao) {
+                    case 0 -> System.out.println("Saindo...");
+                    case 1 -> totalVendasPedidos();
+                    case 2 -> System.out.println("TESTE");
+                    case 3 -> listarPedidosStatus();
+                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+
+                }
+
+
+            } catch (InputMismatchException e) {
+                System.out.println("\033[91mInsira um valor válido\033[39m");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    private void listarPedidosStatus() {
+        int opcao = -1;
+        while (opcao != 1 & opcao != 2 & opcao != 3 & opcao != 4 & opcao != 5) {
+            System.out.println("""
+                    Deseja filtrar por pedidos:
+                    1. Em preparação
+                    2. Procurando entregador
+                    3. A caminho
+                    4. Entregue
+                    5. Cancelado
+                    0. Voltar""");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 0 -> {
+                    return;
+                }
+                case 1 -> {
+                    var listaPedidosFiltrada = pedidos.stream()
+                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Em_Preparacao)
+                            .toList();
+                    if (listaPedidosFiltrada.isEmpty()) {
+                        System.out.println("Não há pedidos com esse status");
+                    } else {
+                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                    }
+                }
+                case 2 -> {
+                    var listaPedidosFiltrada = pedidos.stream()
+                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Procurando_Entregador)
+                            .toList();
+                    if (listaPedidosFiltrada.isEmpty()) {
+                        System.out.println("Não há pedidos com esse status");
+                    } else {
+                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                    }
+                }
+                case 3 -> {
+                    var listaPedidosFiltrada = pedidos.stream()
+                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.A_Caminho)
+                            .toList();
+                    if (listaPedidosFiltrada.isEmpty()) {
+                        System.out.println("Não há pedidos com esse status");
+                    } else {
+                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                    }
+                }
+                case 4 -> {
+                    var listaPedidosFiltrada = pedidos.stream()
+                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Entregue)
+                            .toList();
+                    if (listaPedidosFiltrada.isEmpty()) {
+                        System.out.println("Não há pedidos com esse status");
+                    } else {
+                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                    }
+                }
+                case 5 -> {
+                    var listaPedidosFiltrada = pedidos.stream()
+                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Cancelado)
+                            .toList();
+                    if (listaPedidosFiltrada.isEmpty()) {
+                        System.out.println("Não há pedidos com esse status");
+                    } else {
+                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                    }
+                }
+                default -> System.out.println("\033[91mNúmero inválido\033[39m");
+            }
+        }
+    }
+
+    private void totalVendasPedidos() {
+        var totalVendas = pedidos.stream()
+                .mapToDouble(Pedido::valorPedido)
+                .sum();
+        System.out.printf("""
+                
+                Total de vendas de todos os pedidos: R$ %.2f
+                """, totalVendas);
     }
 
     private void selecionarRestaurante() {
@@ -61,7 +175,7 @@ public class Menu {
         }
     }
 
-    private void exibirOpcoesMenu() {
+    private void exibirOpcoesMenuCardapio() {
         int opcao = -1;
         while (opcao != 0) {
             try {
@@ -78,10 +192,10 @@ public class Menu {
                 opcao = scanner.nextInt();
 
                 switch (opcao) {
+                    case 0 -> iniciarMenuCardapios();
                     case 1 -> filtrarItensCardapio();
                     case 2 -> ordenarCardapio();
                     case 3 -> listarItensCardapio();
-                    case 0 -> iniciarMenuCardapios();
                     default -> System.out.println("\033[91mNúmero inválido\033[39m");
                 }
             } catch (InputMismatchException e) {
@@ -100,7 +214,7 @@ public class Menu {
                 .count();
         System.out.printf("""
                         
-                        Os restaurante contém:
+                        O restaurante contém:
                         %d %s,
                         %d %s
                         """, totalPratosPrincipais, totalPratosPrincipais > 1 || totalPratosPrincipais == 0 ? "Pratos Principais" : "Prato Principal",
@@ -193,7 +307,7 @@ public class Menu {
         }
 
         if (listaFinal.isEmpty()) {
-            System.out.printf("Nenhum resultado encontrado para \"%s\".\n",texto);
+            System.out.printf("Nenhum resultado encontrado para \"%s\".\n", texto);
         } else {
             listaFinal.forEach(Produto::exibirInformacoes);
         }
