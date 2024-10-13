@@ -3,9 +3,7 @@ package Main;
 import Models.*;
 import Services.Menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -77,21 +75,55 @@ public class Main {
         cardapio5.adicionarProduto(bebida5);
 
 
-        var numeroProdutosCardapio1 = cardapio1.getConteudo().size();
-
-
-
         var pedido1 = new Pedido((pedidos.size() + 1));
         pedidos.add(pedido1);
+        adicionarProdutosAleatoriosAoPedido(cardapio1, pedido1);
+
 
         var pedido2 = new Pedido((pedidos.size() + 1));
         pedidos.add(pedido2);
+        adicionarProdutosAleatoriosAoPedido(cardapio2, pedido2);
 
-        pedido1.exibirInformacoes();
-        pedido2.exibirInformacoes();
+        var pedido3 = new Pedido((pedidos.size() + 1));
+        pedidos.add(pedido3);
+        adicionarProdutosAleatoriosAoPedido(cardapio3, pedido3);
+        pedido3.setStatusPedido(STATUS_PEDIDO.A_Caminho);
+
+
+        var pedido4 = new Pedido((pedidos.size() + 1));
+        pedidos.add(pedido4);
+        adicionarProdutosAleatoriosAoPedido(cardapio4, pedido4);
+        pedido4.setStatusPedido(STATUS_PEDIDO.Procurando_Entregador);
+
+
+        var pedido5 = new Pedido((pedidos.size() + 1));
+        pedidos.add(pedido5);
+        adicionarProdutosAleatoriosAoPedido(cardapio5, pedido5);
+        pedido5.setStatusPedido(STATUS_PEDIDO.Procurando_Entregador);
+
+
+        var pedido6 = new Pedido((pedidos.size() + 1));
+        pedidos.add(pedido6);
+        adicionarProdutosAleatoriosAoPedido(cardapio2, pedido6);
+        pedido6.setStatusPedido(STATUS_PEDIDO.Cancelado);
 
         var menu = new Menu(scanner, cardapios, pedidos);
 
         menu.iniciarMenuPedidos();
+    }
+
+    private static void adicionarProdutosAleatoriosAoPedido(Cardapio cardapio, Pedido pedido) {
+        Random random = new Random();
+        List<Produto> produtosCardapio = cardapio.getConteudo(); // Obter a lista de produtos do cardápio
+        pedido.setNomeRestaurante(cardapio.getNomeRestaurante());
+
+        for (int i = 0; i < Math.random() * 10; i++) {
+            // Gera um índice aleatório dentro do tamanho do cardápio
+            int indiceAleatorio = random.nextInt(produtosCardapio.size());
+
+            // Adiciona o produto aleatório ao pedido
+            Produto produtoAleatorio = produtosCardapio.get(indiceAleatorio);
+            pedido.adicionarProduto(produtoAleatorio);
+        }
     }
 }

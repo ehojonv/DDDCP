@@ -5,11 +5,12 @@ import java.util.List;
 
 public class Pedido {
     private int idPedido;
+    private String nomeRestaurante;
     private final List<Produto> produtos = new ArrayList<>();
     private STATUS_PEDIDO statusPedido; //Em preparação / Em entrega / Entregue
 
     public void exibirInformacoes() {
-        System.out.println("Pedido #" + idPedido + "\n" +
+        System.out.println("\nPedido #" + idPedido + " | Restaurante " + nomeRestaurante + "\n" +
                 "Status: " + statusPedido + "\n" +
                 "Itens:");
         produtos.forEach(Produto::exibirInformacoes);
@@ -44,6 +45,14 @@ public class Pedido {
 
     public int getIdPedido() {
         return idPedido;
+    }
+
+    public String getNomeRestaurante() {
+        return nomeRestaurante;
+    }
+
+    public void setNomeRestaurante(String nomeRestaurante) {
+        this.nomeRestaurante = nomeRestaurante;
     }
 
     public STATUS_PEDIDO getStatusPedido() {

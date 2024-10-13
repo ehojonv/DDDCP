@@ -43,7 +43,7 @@ public class Menu {
                         2. 
                         3. Listar pedidos por status
                         0. Sair
-                        """);
+                        ====================================""");
                 opcao = scanner.nextInt();
 
                 switch (opcao) {
@@ -73,7 +73,8 @@ public class Menu {
                     3. A caminho
                     4. Entregue
                     5. Cancelado
-                    0. Voltar""");
+                    0. Voltar
+                    =============================""");
             opcao = scanner.nextInt();
 
             switch (opcao) {
@@ -87,6 +88,7 @@ public class Menu {
                     if (listaPedidosFiltrada.isEmpty()) {
                         System.out.println("Não há pedidos com esse status");
                     } else {
+                        System.out.print("\nPedidos em preparação:");
                         listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
                     }
                 }
@@ -97,6 +99,7 @@ public class Menu {
                     if (listaPedidosFiltrada.isEmpty()) {
                         System.out.println("Não há pedidos com esse status");
                     } else {
+                        System.out.print("\nPedidos buscando entregador:");
                         listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
                     }
                 }
@@ -107,6 +110,7 @@ public class Menu {
                     if (listaPedidosFiltrada.isEmpty()) {
                         System.out.println("Não há pedidos com esse status");
                     } else {
+                        System.out.print("\nPedidos a caminho:");
                         listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
                     }
                 }
@@ -117,6 +121,7 @@ public class Menu {
                     if (listaPedidosFiltrada.isEmpty()) {
                         System.out.println("Não há pedidos com esse status");
                     } else {
+                        System.out.print("\nPedidos entregues:");
                         listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
                     }
                 }
@@ -127,6 +132,7 @@ public class Menu {
                     if (listaPedidosFiltrada.isEmpty()) {
                         System.out.println("Não há pedidos com esse status");
                     } else {
+                        System.out.print("\nPedidos cancelados:");
                         listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
                     }
                 }
