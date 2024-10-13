@@ -7,12 +7,15 @@ public class Pedido {
     private int idPedido;
     private String nomeRestaurante;
     private final List<Produto> produtos = new ArrayList<>();
-    private STATUS_PEDIDO statusPedido; //Em preparação / Em entrega / Entregue
+    private STATUS_PEDIDO statusPedido;
 
     public void exibirInformacoes() {
-        System.out.println("\nPedido #" + idPedido + " | Restaurante " + nomeRestaurante + "\n" +
-                "Status: " + statusPedido + "\n" +
-                "Itens:");
+        System.out.printf("""
+                
+                \033[1mPedido #%d | Restaurante %s\033[22m
+                Status: %s
+                Itens:
+                """,idPedido,nomeRestaurante,STATUS_PEDIDO.formatarParaString(statusPedido));
         produtos.forEach(Produto::exibirInformacoes);
         System.out.println("Valor final: R$ " + String.format("%.2f", this.valorPedido()));
     }
@@ -33,7 +36,7 @@ public class Pedido {
         produtos.remove(produto);
     }
 
-    //Abaixo funções básicas (Construtores-Getters-Setters-Equals-HashCode-toString)
+    // Abaixo funções básicas (Construtores-Getters-Setters-Equals-HashCode-toString)
 
     public Pedido() {
     }
@@ -53,6 +56,10 @@ public class Pedido {
 
     public void setNomeRestaurante(String nomeRestaurante) {
         this.nomeRestaurante = nomeRestaurante;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
     }
 
     public STATUS_PEDIDO getStatusPedido() {

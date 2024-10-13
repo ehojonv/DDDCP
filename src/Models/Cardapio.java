@@ -9,8 +9,10 @@ public class Cardapio {
     private List<Produto> conteudo = new ArrayList<>();
 
     public void exibirInformacoes() {
-        System.out.println("\033[1mCardápio do " + nomeRestaurante);
-        System.out.println("\033[0mProdutos:");
+        System.out.printf("""
+                
+                \033[1mCardápio do %s\033[22m
+                Produtos:""",nomeRestaurante);
         conteudo.forEach(Produto::exibirInformacoes);
     }
 

@@ -3,16 +3,16 @@ package Services;
 import Models.*;
 
 import java.text.Normalizer;
-import java.util.Comparator;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Menu {
     private final Scanner scanner;
     private final List<Cardapio> cardapios;
     private final List<Pedido> pedidos;
     private Cardapio cardapioEscolhido;
+    private int opcao;
 
     public Menu(Scanner scanner, List<Cardapio> cardapios, List<Pedido> pedidos) {
         this.scanner = scanner;
@@ -20,41 +20,30 @@ public class Menu {
         this.pedidos = pedidos;
     }
 
-    public void iniciarMenuCardapios() {
-        cardapioEscolhido = null;
-        selecionarRestaurante();
-        if (cardapioEscolhido != null) {
-            exibirOpcoesMenuCardapio();
-        }
-    }
-
-    public void iniciarMenuPedidos() {
-        exibirOpcoesMenuPedidos();
-    }
-
-    private void exibirOpcoesMenuPedidos() {
-        int opcao = -1;
+    // Menu principal
+    public void menuInicial() {
+        opcao = -1;
         while (opcao != 0) {
             try {
                 System.out.println("""
                         
-                        Bem vindo ao organizador de pedidos
-                        1. Calcular o total de vendas geral
-                        2. 
-                        3. Listar pedidos por status
+                        Bem vindo ao\033[1m SeuFome\033[22m
+                        Selecione o menu que quer utilizar:
+                        1. Mostrar todos os cardápios
+                        2. Menu de cardápios
+                        3. Menu de pedidos
                         0. Sair
-                        ====================================""");
+                        =========================================
+                        Digite a opção desejada:""");
                 opcao = scanner.nextInt();
 
                 switch (opcao) {
-                    case 0 -> System.out.println("Saindo...");
-                    case 1 -> totalVendasPedidos();
-                    case 2 -> System.out.println("TESTE");
-                    case 3 -> listarPedidosStatus();
+                    case 0 -> System.out.println("\033[92mSaindo...\033[39m");
+                    case 1 -> cardapios.forEach(Cardapio::exibirInformacoes);
+                    case 2 -> iniciarMenuCardapios();
+                    case 3 -> iniciarMenuPedidos();
                     default -> System.out.println("\033[91mNúmero inválido\033[39m");
-
                 }
-
 
             } catch (InputMismatchException e) {
                 System.out.println("\033[91mInsira um valor válido\033[39m");
@@ -63,145 +52,81 @@ public class Menu {
         }
     }
 
-    private void listarPedidosStatus() {
-        int opcao = -1;
-        while (opcao != 1 & opcao != 2 & opcao != 3 & opcao != 4 & opcao != 5) {
-            System.out.println("""
-                    Deseja filtrar por pedidos:
-                    1. Em preparação
-                    2. Procurando entregador
-                    3. A caminho
-                    4. Entregue
-                    5. Cancelado
-                    0. Voltar
-                    =============================""");
-            opcao = scanner.nextInt();
-
-            switch (opcao) {
-                case 0 -> {
-                    return;
-                }
-                case 1 -> {
-                    var listaPedidosFiltrada = pedidos.stream()
-                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Em_Preparacao)
-                            .toList();
-                    if (listaPedidosFiltrada.isEmpty()) {
-                        System.out.println("Não há pedidos com esse status");
-                    } else {
-                        System.out.print("\nPedidos em preparação:");
-                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
-                    }
-                }
-                case 2 -> {
-                    var listaPedidosFiltrada = pedidos.stream()
-                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Procurando_Entregador)
-                            .toList();
-                    if (listaPedidosFiltrada.isEmpty()) {
-                        System.out.println("Não há pedidos com esse status");
-                    } else {
-                        System.out.print("\nPedidos buscando entregador:");
-                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
-                    }
-                }
-                case 3 -> {
-                    var listaPedidosFiltrada = pedidos.stream()
-                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.A_Caminho)
-                            .toList();
-                    if (listaPedidosFiltrada.isEmpty()) {
-                        System.out.println("Não há pedidos com esse status");
-                    } else {
-                        System.out.print("\nPedidos a caminho:");
-                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
-                    }
-                }
-                case 4 -> {
-                    var listaPedidosFiltrada = pedidos.stream()
-                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Entregue)
-                            .toList();
-                    if (listaPedidosFiltrada.isEmpty()) {
-                        System.out.println("Não há pedidos com esse status");
-                    } else {
-                        System.out.print("\nPedidos entregues:");
-                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
-                    }
-                }
-                case 5 -> {
-                    var listaPedidosFiltrada = pedidos.stream()
-                            .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Cancelado)
-                            .toList();
-                    if (listaPedidosFiltrada.isEmpty()) {
-                        System.out.println("Não há pedidos com esse status");
-                    } else {
-                        System.out.print("\nPedidos cancelados:");
-                        listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
-                    }
-                }
-                default -> System.out.println("\033[91mNúmero inválido\033[39m");
+    // Menu de cardápios
+    public void iniciarMenuCardapios() {
+        while (true) {
+            selecionarRestaurante();
+            if (cardapioEscolhido != null) {
+                exibirOpcoesMenuCardapio();
+            } else {
+                break;
             }
         }
     }
 
-    private void totalVendasPedidos() {
-        var totalVendas = pedidos.stream()
-                .mapToDouble(Pedido::valorPedido)
-                .sum();
-        System.out.printf("""
-                
-                Total de vendas de todos os pedidos: R$ %.2f
-                """, totalVendas);
-    }
-
     private void selecionarRestaurante() {
-        int escolha;
+        cardapioEscolhido = null;
+        opcao = -1;
+        List<String> listaRestaurantes = cardapios.stream()
+                .map(c -> (cardapios.indexOf(c) + 1) + ". - " + c.getNomeRestaurante())
+                .toList();
+
         while (cardapioEscolhido == null) {
             try {
                 System.out.println("\nRestaurantes disponíveis para ver o cardápio:");
-
-                var listaRestaurantes = cardapios.stream()
-                        .map(c -> "#" + (cardapios.indexOf(c) + 1) + " - " + c.getNomeRestaurante())
-                        .toList();
                 listaRestaurantes.forEach(System.out::println);
+                System.out.printf("""
+                        %d. Voltar para o menu principal
+                        =========================================
+                        Digite a opção desejada ou 0 para sair:
+                        """, (listaRestaurantes.size() + 1));
+                opcao = scanner.nextInt();
 
-                System.out.println("Digite o # do restaurante ou 0 para sair:");
-                escolha = scanner.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("\033[91mInsira um valor válido\033[39m");
                 scanner.nextLine();
                 continue;
             }
 
-            if (1 <= escolha && escolha <= cardapios.size()) {
-                cardapioEscolhido = cardapios.get(escolha - 1);
-            } else if (escolha == 0) {
-                System.out.println("Saindo...");
+            if (1 <= opcao && opcao <= cardapios.size()) {
+                cardapioEscolhido = cardapios.get(opcao - 1);
+            } else if (opcao == 0) {
+                System.out.println("\033[92mSaindo...\033[39m");
+                break;
+            } else if (opcao == listaRestaurantes.size() + 1) {
+                cardapioEscolhido = null;
                 break;
             } else {
                 System.out.println("\033[91mNúmero inválido\033[39m");
             }
         }
-    }
+    } // Menu seletor de restaurante
 
     private void exibirOpcoesMenuCardapio() {
-        int opcao = -1;
+        opcao = -1;
         while (opcao != 0) {
             try {
                 System.out.printf("""
                         
-                        Bem vindo ao organizador de cardápio do restaurante %s
+                        Bem vindo ao organizador de cardápio do\033[1m %s\033[22m
                         1. Filtrar item cardápio
                         2. Ordenar cardápio
                         3. Listar itens do cardápio
-                        0. Selecionar outro restaurante
+                        4. Selecionar outro restaurante
+                        0. Sair
                         =====================================================
                         Digite a opção desejada:
                         """, cardapioEscolhido.getNomeRestaurante());
                 opcao = scanner.nextInt();
 
                 switch (opcao) {
-                    case 0 -> iniciarMenuCardapios();
+                    case 0 -> System.out.println("\033[92mSaindo...\033[39m");
                     case 1 -> filtrarItensCardapio();
                     case 2 -> ordenarCardapio();
                     case 3 -> listarItensCardapio();
+                    case 4 -> {
+                        return;
+                    }
                     default -> System.out.println("\033[91mNúmero inválido\033[39m");
                 }
             } catch (InputMismatchException e) {
@@ -211,63 +136,9 @@ public class Menu {
         }
     }
 
-    public void listarItensCardapio() {
-        int totalPratosPrincipais = (int) cardapioEscolhido.getConteudo().stream()
-                .filter(p -> p instanceof PratoPrincipal)
-                .count();
-        int totalBebidas = (int) cardapioEscolhido.getConteudo().stream()
-                .filter(p -> p instanceof Bebida)
-                .count();
-        System.out.printf("""
-                        
-                        O restaurante contém:
-                        %d %s,
-                        %d %s
-                        """, totalPratosPrincipais, totalPratosPrincipais > 1 || totalPratosPrincipais == 0 ? "Pratos Principais" : "Prato Principal",
-                totalBebidas, totalBebidas > 1 || totalBebidas == 0 ? "Bebidas" : "Bebida");
-    }
-
-    private void ordenarCardapio() {
-        int opcao = -1;
-        while (opcao != 1 & opcao != 2) {
-            System.out.println("""
-                    
-                    Quer ordenar os produtos por qual fator?
-                    1. Nome
-                    2. Preço
-                    0. Voltar
-                    =========================================
-                    Digite a opção desejada:""");
-            opcao = scanner.nextInt();
-
-            switch (opcao) {
-                case 0 -> {
-                    return;
-                }
-                case 1 -> ordenarPorNome();
-                case 2 -> ordenarPorPreco();
-                default -> System.out.println("\033[91mNúmero in\033[39m");
-            }
-        }
-    }
-
-    private void ordenarPorPreco() {
-        System.out.printf("\nCardápio do %s ordenado por preço:\n", cardapioEscolhido.getNomeRestaurante());
-        cardapioEscolhido.getConteudo().stream()
-                .sorted(Comparator.comparing(Produto::getPreco))
-                .forEach(Produto::exibirInformacoes);
-    }
-
-    private void ordenarPorNome() {
-        System.out.printf("\nCardápio do %s ordenado por nome:\n", cardapioEscolhido.getNomeRestaurante());
-        cardapioEscolhido.getConteudo().stream()
-                .sorted(Comparator.comparing(Produto::getNome))
-                .forEach(Produto::exibirInformacoes);
-    }
-
     private void filtrarItensCardapio() {
         int opcao = -1;
-        while (opcao != 1 & opcao != 2 & opcao != 3) {
+        while (!(1 <= opcao & opcao <= 3)) {
             System.out.println("""
                     
                     Quer filtrar por qual fator?
@@ -275,7 +146,7 @@ public class Menu {
                     2. Preço
                     3. Tipo
                     0. Voltar
-                    ===============================
+                    =========================================
                     Digite a opção desejada:""");
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -290,7 +161,7 @@ public class Menu {
                 default -> System.out.println("\033[91mNúmero inválido\033[39m");
             }
         }
-    }
+    } // Menu de filtro
 
     private void filtrarPorTexto() {
         System.out.println("Digite o termo para filtrar:");
@@ -315,6 +186,7 @@ public class Menu {
         if (listaFinal.isEmpty()) {
             System.out.printf("Nenhum resultado encontrado para \"%s\".\n", texto);
         } else {
+            System.out.println("Produtos encontrados:");
             listaFinal.forEach(Produto::exibirInformacoes);
         }
 
@@ -332,10 +204,13 @@ public class Menu {
         int opcao = -1;
         while (opcao != 1 & opcao != 2) {
             System.out.println("""
+                    
                     Deseja filtrar em:
                     1. Prato Principal
                     2. Bebida
-                    0. Voltar""");
+                    0. Voltar
+                    =========================================
+                    Digite a opção desejada:""");
             opcao = scanner.nextInt();
 
             switch (opcao) {
@@ -347,19 +222,229 @@ public class Menu {
                 default -> System.out.println("\033[91mNúmero inválido\033[39m");
             }
         }
-    }
+    } // Menu de filtro por tipo
 
     private void filtrarBebidas() {
-        System.out.printf("\nCardápio do %s filtrado por bebidas:\n", cardapioEscolhido.getNomeRestaurante());
+        System.out.printf("\nCardápio do\033[1m %s\033[22m filtrado por\033[4m bebidas\033[24m:\n", cardapioEscolhido.getNomeRestaurante());
         cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p instanceof Bebida)
                 .forEach(Produto::exibirInformacoes);
     }
 
     private void filtrarPratosPrincipais() {
-        System.out.printf("\nCardápio do %s filtrado por pratos principais:\n", cardapioEscolhido.getNomeRestaurante());
+        System.out.printf("\nCardápio do\033[1m %s\033[22m filtrado por\033[4m pratos principais\033[24m:\n", cardapioEscolhido.getNomeRestaurante());
         cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p instanceof PratoPrincipal)
                 .forEach(Produto::exibirInformacoes);
+    }
+
+    private void ordenarCardapio() {
+        int opcao = -1;
+        while (opcao != 1 & opcao != 2) {
+            System.out.println("""
+                    
+                    Quer ordenar os produtos por qual fator?
+                    1. Nome
+                    2. Preço
+                    0. Voltar
+                    =========================================
+                    Digite a opção desejada:""");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 0 -> {
+                    return;
+                }
+                case 1 -> ordenarPorNome();
+                case 2 -> ordenarPorPreco();
+                default -> System.out.println("\033[91mNúmero inválido\033[39m");
+            }
+        }
+    } // Menu de ordenar cardápio
+
+    private void ordenarPorPreco() {
+        System.out.printf("""
+                
+                Cardápio do\033[1m %s\033[22m ordenado por \033[4mpreço\033[24m:
+                """, cardapioEscolhido.getNomeRestaurante());
+        cardapioEscolhido.getConteudo().stream()
+                .sorted(Comparator.comparing(Produto::getPreco))
+                .forEach(Produto::exibirInformacoes);
+    }
+
+    private void ordenarPorNome() {
+        System.out.printf("""
+                
+                Cardápio do\033[1m %s\033[22m ordenado por \033[4mnome\033[24m:
+                """, cardapioEscolhido.getNomeRestaurante());
+        cardapioEscolhido.getConteudo().stream()
+                .sorted(Comparator.comparing(Produto::getNome))
+                .forEach(Produto::exibirInformacoes);
+    }
+
+    public void listarItensCardapio() {
+        int totalPratosPrincipais = (int) cardapioEscolhido.getConteudo().stream()
+                .filter(p -> p instanceof PratoPrincipal)
+                .count();
+        int totalBebidas = (int) cardapioEscolhido.getConteudo().stream()
+                .filter(p -> p instanceof Bebida)
+                .count();
+        System.out.printf("""
+                        
+                        O restaurante contém %d %s e %d %s.
+                        """, totalPratosPrincipais, totalPratosPrincipais > 1 || totalPratosPrincipais == 0 ? "Pratos Principais" : "Prato Principal",
+                totalBebidas, totalBebidas > 1 || totalBebidas == 0 ? "Bebidas" : "Bebida");
+    }
+
+    //Menu de Pedidos
+    public void iniciarMenuPedidos() {
+        exibirOpcoesMenuPedidos();
+    }
+
+    private void exibirOpcoesMenuPedidos() {
+        opcao = -1;
+        while (opcao != 0) {
+            try {
+                System.out.println("""
+                        
+                        Bem vindo ao organizador de pedidos
+                        1. Listar todos os pedidos
+                        2. Calcular o total de vendas geral
+                        3. Encontrar produto mais pedido
+                        4. Listar pedidos por status
+                        5. Voltar ao menu principal
+                        0. Sair
+                        =========================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+
+                switch (opcao) {
+                    case 0 -> System.out.println("\033[92mSaindo...\033[39m");
+                    case 1 -> pedidos.forEach(Pedido::exibirInformacoes);
+                    case 2 -> totalVendasPedidos();
+                    case 3 -> encontrarProdutoMaisPedido();
+                    case 4 -> listarPedidosStatus();
+                    case 5 -> {
+                        return;
+                    }
+                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\033[91mInsira um valor válido\033[39m");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    private void encontrarProdutoMaisPedido() {
+
+        var produtos = pedidos.stream()
+                .map(Pedido::getProdutos)
+                .flatMap(List::stream)
+                .toList();
+
+        produtos.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .ifPresent(produtoMaisPedido -> System.out.printf("O produto mais pedido é: \033[1m%s\033[22m\n", produtoMaisPedido.getNome()));
+    }
+
+    private void listarPedidosStatus() {
+        int opcao = -1;
+        while (opcao != 1 & opcao != 2 & opcao != 3 & opcao != 4 & opcao != 5) {
+            try {
+                System.out.println("""
+                        
+                        Deseja filtrar por pedidos:
+                        1. Em preparação
+                        2. Procurando entregador
+                        3. A caminho
+                        4. Entregue
+                        5. Cancelado
+                        0. Voltar
+                        =========================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+
+                switch (opcao) {
+                    case 0 -> {
+                        return;
+                    }
+                    case 1 -> {
+                        var listaPedidosFiltrada = pedidos.stream()
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Em_Preparacao)
+                                .toList();
+                        if (listaPedidosFiltrada.isEmpty()) {
+                            System.out.println("Não há pedidos com esse status");
+                        } else {
+                            System.out.print("\nPedidos em preparação:");
+                            listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                        }
+                    }
+                    case 2 -> {
+                        var listaPedidosFiltrada = pedidos.stream()
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Procurando_Entregador)
+                                .toList();
+                        if (listaPedidosFiltrada.isEmpty()) {
+                            System.out.println("Não há pedidos com esse status");
+                        } else {
+                            System.out.print("\nPedidos buscando entregador:");
+                            listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                        }
+                    }
+                    case 3 -> {
+                        var listaPedidosFiltrada = pedidos.stream()
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.A_Caminho)
+                                .toList();
+                        if (listaPedidosFiltrada.isEmpty()) {
+                            System.out.println("Não há pedidos com esse status");
+                        } else {
+                            System.out.print("\nPedidos a caminho:");
+                            listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                        }
+                    }
+                    case 4 -> {
+                        var listaPedidosFiltrada = pedidos.stream()
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Entregue)
+                                .toList();
+                        if (listaPedidosFiltrada.isEmpty()) {
+                            System.out.println("Não há pedidos com esse status");
+                        } else {
+                            System.out.print("\nPedidos entregues:");
+                            listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                        }
+                    }
+                    case 5 -> {
+                        var listaPedidosFiltrada = pedidos.stream()
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Cancelado)
+                                .toList();
+                        if (listaPedidosFiltrada.isEmpty()) {
+                            System.out.println("Não há pedidos com esse status");
+                        } else {
+                            System.out.print("\nPedidos cancelados:");
+                            listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
+                        }
+                    }
+                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\033[91mInsira um valor válido\033[39m");
+                scanner.nextLine();
+            }
+        }
+    } // Menu de lista de status de pedido
+
+    private void totalVendasPedidos() {
+        var totalVendas = pedidos.stream()
+                .mapToDouble(Pedido::valorPedido)
+                .sum();
+
+        System.out.println("Pedido | Valor");
+        pedidos.forEach(p -> System.out.println("#" + p.getIdPedido() + " | R$ " + String.format("%.2f", p.valorPedido())));
+        System.out.printf("""
+                Total: R$ %.2f
+                """, totalVendas);
     }
 }

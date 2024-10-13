@@ -5,6 +5,9 @@ public enum STATUS_PEDIDO {
     Procurando_Entregador,
     A_Caminho,
     Entregue,
-    Cancelado
+    Cancelado;
 
+    public static String formatarParaString(STATUS_PEDIDO status) {
+        return status.name().replace("_", " ");
+    }
 }
