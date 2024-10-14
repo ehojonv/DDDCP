@@ -42,7 +42,7 @@ public class Menu {
                     case 1 -> cardapios.forEach(Cardapio::exibirInformacoes);
                     case 2 -> iniciarMenuCardapios();
                     case 3 -> iniciarMenuPedidos();
-                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                    default -> System.out.println("\033[91mOpção inválida\033[39m");
                 }
 
             } catch (InputMismatchException e) {
@@ -66,6 +66,9 @@ public class Menu {
 
     private void selecionarRestaurante() {
         cardapioEscolhido = null;
+        if (opcao == 0) {
+            return;
+        }
         opcao = -1;
         List<String> listaRestaurantes = cardapios.stream()
                 .map(c -> (cardapios.indexOf(c) + 1) + ". - " + c.getNomeRestaurante())
@@ -97,7 +100,7 @@ public class Menu {
                 cardapioEscolhido = null;
                 break;
             } else {
-                System.out.println("\033[91mNúmero inválido\033[39m");
+                System.out.println("\033[91mOpção inválida\033[39m");
             }
         }
     } // Menu seletor de restaurante
@@ -127,7 +130,7 @@ public class Menu {
                     case 4 -> {
                         return;
                     }
-                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                    default -> System.out.println("\033[91mOpção inválida\033[39m");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("\033[91mInsira um valor válido\033[39m");
@@ -158,7 +161,7 @@ public class Menu {
                 case 1 -> filtrarPorTexto();
                 case 2 -> filtrarPorPreco();
                 case 3 -> filtrarPorTipo();
-                default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                default -> System.out.println("\033[91mOpção inválida\033[39m");
             }
         }
     } // Menu de filtro
@@ -195,9 +198,16 @@ public class Menu {
     private void filtrarPorPreco() {
         System.out.println("Digite o preço máximo para buscar:");
         var precoLimite = scanner.nextDouble();
-        cardapioEscolhido.getConteudo().stream()
+        var listaFinal = cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p.getPreco() <= precoLimite)
-                .forEach(Produto::exibirInformacoes);
+                .toList();
+
+        if (listaFinal.isEmpty()) {
+            System.out.printf("Nenhum produto mais barato que R$ %.2f\n",precoLimite);
+        } else {
+            System.out.printf("\nAqui estão os produtos mais baratos que R$ %.2f:\n",precoLimite);
+            listaFinal.forEach(Produto::exibirInformacoes);
+        }
     }
 
     private void filtrarPorTipo() {
@@ -219,7 +229,7 @@ public class Menu {
                 }
                 case 1 -> filtrarPratosPrincipais();
                 case 2 -> filtrarBebidas();
-                default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                default -> System.out.println("\033[91mOpção inválida\033[39m");
             }
         }
     } // Menu de filtro por tipo
@@ -257,7 +267,7 @@ public class Menu {
                 }
                 case 1 -> ordenarPorNome();
                 case 2 -> ordenarPorPreco();
-                default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                default -> System.out.println("\033[91mOpção inválida\033[39m");
             }
         }
     } // Menu de ordenar cardápio
@@ -327,7 +337,7 @@ public class Menu {
                     case 5 -> {
                         return;
                     }
-                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                    default -> System.out.println("\033[91mOpção inválida\033[39m");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("\033[91mInsira um valor válido\033[39m");
@@ -427,7 +437,7 @@ public class Menu {
                             listaPedidosFiltrada.forEach(Pedido::exibirInformacoes);
                         }
                     }
-                    default -> System.out.println("\033[91mNúmero inválido\033[39m");
+                    default -> System.out.println("\033[91mOpção inválida\033[39m");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("\033[91mInsira um valor válido\033[39m");
