@@ -294,7 +294,7 @@ public class Menu {
                 .forEach(Produto::exibirInformacoes);
     }
 
-    public void listarItensCardapio() {
+    private void listarItensCardapio() {
 
         int totalPratosPrincipais = (int) cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p instanceof PratoPrincipal)
