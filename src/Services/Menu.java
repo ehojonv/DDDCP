@@ -389,7 +389,7 @@ public class Menu {
                     }
                     case 1 -> {
                         var listaPedidosFiltrada = pedidos.stream()
-                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Em_Preparacao)
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.EM_PREPARACAO)
                                 .toList();
                         if (listaPedidosFiltrada.isEmpty()) {
                             System.out.println("Não há pedidos com esse status");
@@ -400,7 +400,7 @@ public class Menu {
                     }
                     case 2 -> {
                         var listaPedidosFiltrada = pedidos.stream()
-                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Procurando_Entregador)
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.PROCURANDO_ENTREGADOR)
                                 .toList();
                         if (listaPedidosFiltrada.isEmpty()) {
                             System.out.println("Não há pedidos com esse status");
@@ -411,7 +411,7 @@ public class Menu {
                     }
                     case 3 -> {
                         var listaPedidosFiltrada = pedidos.stream()
-                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.A_Caminho)
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.A_CAMINHO)
                                 .toList();
                         if (listaPedidosFiltrada.isEmpty()) {
                             System.out.println("Não há pedidos com esse status");
@@ -422,7 +422,7 @@ public class Menu {
                     }
                     case 4 -> {
                         var listaPedidosFiltrada = pedidos.stream()
-                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Entregue)
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.ENTREGUE)
                                 .toList();
                         if (listaPedidosFiltrada.isEmpty()) {
                             System.out.println("Não há pedidos com esse status");
@@ -433,7 +433,7 @@ public class Menu {
                     }
                     case 5 -> {
                         var listaPedidosFiltrada = pedidos.stream()
-                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Cancelado)
+                                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.CANCELADO)
                                 .toList();
                         if (listaPedidosFiltrada.isEmpty()) {
                             System.out.println("Não há pedidos com esse status");
@@ -453,7 +453,7 @@ public class Menu {
 
     private void totalVendasPedidos() {
         var totalVendas = pedidos.stream()
-                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Entregue)
+                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.ENTREGUE)
                 .mapToDouble(Pedido::valorPedido)
                 .sum();
 

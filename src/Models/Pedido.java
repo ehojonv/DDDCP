@@ -43,7 +43,7 @@ public class Pedido {
 
     public Pedido(int idPedido) {
         this.idPedido = idPedido;
-        statusPedido = STATUS_PEDIDO.Em_Preparacao;
+        statusPedido = STATUS_PEDIDO.EM_PREPARACAO;
     }
 
     public int getIdPedido() {
