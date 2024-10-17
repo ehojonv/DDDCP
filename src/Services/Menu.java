@@ -4,7 +4,6 @@ import Models.*;
 
 import java.text.Normalizer;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Menu {
@@ -26,7 +25,7 @@ public class Menu {
         while (opcao != 0) {
             try {
                 System.out.println("""
-                        
+
                         Bem vindo ao\033[1m SeuFome\033[22m
                         Selecione o menu que quer utilizar:
                         1. Mostrar todos os cardápios
@@ -75,6 +74,8 @@ public class Menu {
                 .toList();
 
         while (cardapioEscolhido == null) {
+            int ultimaOpcao = listaRestaurantes.size() + 1;
+
             try {
                 System.out.println("\nRestaurantes disponíveis para ver o cardápio:");
                 listaRestaurantes.forEach(System.out::println);
@@ -82,7 +83,7 @@ public class Menu {
                         %d. Voltar para o menu principal
                         =========================================
                         Digite a opção desejada ou 0 para sair:
-                        """, (listaRestaurantes.size() + 1));
+                        """, ultimaOpcao);
                 opcao = scanner.nextInt();
 
             } catch (InputMismatchException e) {
@@ -96,7 +97,7 @@ public class Menu {
             } else if (opcao == 0) {
                 System.out.println("\033[92mSaindo...\033[39m");
                 break;
-            } else if (opcao == listaRestaurantes.size() + 1) {
+            } else if (opcao == ultimaOpcao) {
                 cardapioEscolhido = null;
                 break;
             } else {
@@ -198,14 +199,15 @@ public class Menu {
     private void filtrarPorPreco() {
         System.out.println("Digite o preço máximo para buscar:");
         var precoLimite = scanner.nextDouble();
+
         var listaFinal = cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p.getPreco() <= precoLimite)
                 .toList();
 
         if (listaFinal.isEmpty()) {
-            System.out.printf("Nenhum produto mais barato que R$ %.2f\n",precoLimite);
+            System.out.printf("Nenhum produto mais barato que R$ %.2f\n", precoLimite);
         } else {
-            System.out.printf("\nAqui estão os produtos mais baratos que R$ %.2f:\n",precoLimite);
+            System.out.printf("\nAqui estão os produtos mais baratos que R$ %.2f:\n", precoLimite);
             listaFinal.forEach(Produto::exibirInformacoes);
         }
     }
@@ -274,7 +276,7 @@ public class Menu {
 
     private void ordenarPorPreco() {
         System.out.printf("""
-                
+
                 Cardápio do\033[1m %s\033[22m ordenado por \033[4mpreço\033[24m:
                 """, cardapioEscolhido.getNomeRestaurante());
         cardapioEscolhido.getConteudo().stream()
@@ -284,7 +286,7 @@ public class Menu {
 
     private void ordenarPorNome() {
         System.out.printf("""
-                
+
                 Cardápio do\033[1m %s\033[22m ordenado por \033[4mnome\033[24m:
                 """, cardapioEscolhido.getNomeRestaurante());
         cardapioEscolhido.getConteudo().stream()
@@ -293,14 +295,17 @@ public class Menu {
     }
 
     public void listarItensCardapio() {
+
         int totalPratosPrincipais = (int) cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p instanceof PratoPrincipal)
                 .count();
+
         int totalBebidas = (int) cardapioEscolhido.getConteudo().stream()
                 .filter(p -> p instanceof Bebida)
                 .count();
+
         System.out.printf("""
-                        
+
                         O restaurante contém %d %s e %d %s.
                         """, totalPratosPrincipais, totalPratosPrincipais > 1 || totalPratosPrincipais == 0 ? "Pratos Principais" : "Prato Principal",
                 totalBebidas, totalBebidas > 1 || totalBebidas == 0 ? "Bebidas" : "Bebida");
@@ -316,7 +321,7 @@ public class Menu {
         while (opcao != 0) {
             try {
                 System.out.println("""
-                        
+
                         Bem vindo ao organizador de pedidos
                         1. Listar todos os pedidos
                         2. Calcular o total de vendas geral
@@ -348,25 +353,25 @@ public class Menu {
 
     private void encontrarProdutoMaisPedido() {
 
-        var produtos = pedidos.stream()
+        var todosProdutos = pedidos.stream()
                 .map(Pedido::getProdutos)
                 .flatMap(List::stream)
                 .toList();
 
-        produtos.stream()
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        todosProdutos.stream()
+                .collect(Collectors.groupingBy(p -> p, Collectors.counting()))
                 .entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .ifPresent(produtoMaisPedido -> System.out.printf("O produto mais pedido é: \033[1m%s\033[22m\n", produtoMaisPedido.getNome()));
-    }
+    } // ?
 
     private void listarPedidosStatus() {
         int opcao = -1;
         while (opcao != 1 & opcao != 2 & opcao != 3 & opcao != 4 & opcao != 5) {
             try {
                 System.out.println("""
-                        
+
                         Deseja filtrar por pedidos:
                         1. Em preparação
                         2. Procurando entregador
@@ -448,13 +453,14 @@ public class Menu {
 
     private void totalVendasPedidos() {
         var totalVendas = pedidos.stream()
+                .filter(p -> p.getStatusPedido() == STATUS_PEDIDO.Entregue)
                 .mapToDouble(Pedido::valorPedido)
                 .sum();
 
         System.out.println("Pedido | Valor");
-        pedidos.forEach(p -> System.out.println("#" + p.getIdPedido() + " | R$ " + String.format("%.2f", p.valorPedido())));
+        pedidos.forEach(p -> System.out.println("#" + p.getIdPedido() + " | R$ " + String.format("%.2f", p.valorPedido()) + " | Status: " + STATUS_PEDIDO.formatarParaString(p.getStatusPedido())));
         System.out.printf("""
-                Total: R$ %.2f
+                Total dos pedidos entregues: R$ %.2f
                 """, totalVendas);
     }
 }

@@ -95,7 +95,7 @@ public class Main {
         var pedido4 = new Pedido((pedidos.size() + 1));
         pedidos.add(pedido4);
         adicionarProdutosAleatoriosAoPedido(pedido4);
-        pedido4.setStatusPedido(STATUS_PEDIDO.Procurando_Entregador);
+        pedido4.setStatusPedido(STATUS_PEDIDO.Entregue);
 
 
         // Criação do pedido 5 | Adição do pedido 5 no sistema | Geração de produtos aleatórios para o pedido | Mudando o status do pedido
@@ -109,7 +109,7 @@ public class Main {
         var pedido6 = new Pedido((pedidos.size() + 1));
         pedidos.add(pedido6);
         adicionarProdutosAleatoriosAoPedido(pedido6);
-        pedido6.setStatusPedido(STATUS_PEDIDO.Cancelado);
+        pedido6.setStatusPedido(STATUS_PEDIDO.Entregue);
 
         var menu = new Menu(scanner, cardapios, pedidos);
 

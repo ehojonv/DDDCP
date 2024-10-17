@@ -12,7 +12,8 @@ public class Cardapio {
         System.out.printf("""
                 
                 \033[1mCardápio do %s\033[22m
-                Produtos:""",nomeRestaurante);
+                Produtos:
+                """,nomeRestaurante);
         conteudo.forEach(Produto::exibirInformacoes);
     }
 
