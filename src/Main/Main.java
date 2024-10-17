@@ -74,39 +74,41 @@ public class Main {
         cardapio5.adicionarProduto(bebida3);
         cardapio5.adicionarProduto(bebida5);
 
+        
+        int novoIdPedido = pedidos.size() + 1;
         // Criação do pedido 1 | Adição do pedido 1 no sistema | Geração de produtos aleatórios para o pedido
-        var pedido1 = new Pedido((pedidos.size() + 1));
+        var pedido1 = new Pedido(novoIdPedido);
         pedidos.add(pedido1);
         adicionarProdutosAleatoriosAoPedido(pedido1);
 
         // Criação do pedido 2 | Adição do pedido 2 no sistema | Geração de produtos aleatórios para o pedido
-        var pedido2 = new Pedido((pedidos.size() + 1));
+        var pedido2 = new Pedido(novoIdPedido);
         pedidos.add(pedido2);
         adicionarProdutosAleatoriosAoPedido(pedido2);
 
         // Criação do pedido 3 | Adição do pedido 3 no sistema | Geração de produtos aleatórios para o pedido | Mudando o status do pedido
-        var pedido3 = new Pedido((pedidos.size() + 1));
+        var pedido3 = new Pedido(novoIdPedido);
         pedidos.add(pedido3);
         adicionarProdutosAleatoriosAoPedido(pedido3);
         pedido3.setStatusPedido(STATUS_PEDIDO.PROCURANDO_ENTREGADOR);
 
 
         // Criação do pedido 4 | Adição do pedido 4 no sistema | Geração de produtos aleatórios para o pedido | Mudando o status do pedido
-        var pedido4 = new Pedido((pedidos.size() + 1));
+        var pedido4 = new Pedido(novoIdPedido);
         pedidos.add(pedido4);
         adicionarProdutosAleatoriosAoPedido(pedido4);
         pedido4.setStatusPedido(STATUS_PEDIDO.ENTREGUE);
 
 
         // Criação do pedido 5 | Adição do pedido 5 no sistema | Geração de produtos aleatórios para o pedido | Mudando o status do pedido
-        var pedido5 = new Pedido((pedidos.size() + 1));
+        var pedido5 = new Pedido(novoIdPedido);
         pedidos.add(pedido5);
         adicionarProdutosAleatoriosAoPedido(pedido5);
         pedido5.setStatusPedido(STATUS_PEDIDO.A_CAMINHO);
 
 
         // Criação do pedido 6 | Adição do pedido 6 no sistema | Geração de produtos aleatórios para o pedido | Mudando o status do pedido
-        var pedido6 = new Pedido((pedidos.size() + 1));
+        var pedido6 = new Pedido(novoIdPedido);
         pedidos.add(pedido6);
         adicionarProdutosAleatoriosAoPedido(pedido6);
         pedido6.setStatusPedido(STATUS_PEDIDO.ENTREGUE);
